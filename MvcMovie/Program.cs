@@ -1,11 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<MvcMovieContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("MvcMovieContext") ?? throw new InvalidOperationException("Connection string 'MvcMovieContext' not found.")));
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+if (builder.Environment.IsDevelopment())
+{
+    // 使用 SQLite 進行開發
+    builder.Services.AddDbContext<MvcMovieContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("MvcMovieContext") ?? throw new InvalidOperationException("Connection string 'MvcMovieContext' not found.")));
+}
+else
+{
+    // SQL Server 用於生產環境
+    builder.Services.AddDbContext<MvcMovieContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcMovieContext")));
+}
 
 var app = builder.Build();
 
