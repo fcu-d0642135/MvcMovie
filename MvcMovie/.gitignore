@@ -1,0 +1,3 @@
+# SQLite 資料庫相關檔案
+*.db-shm
+*.db-wal
